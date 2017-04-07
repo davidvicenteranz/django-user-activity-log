@@ -12,6 +12,7 @@ from django.db import connection
 from django.core.management import call_command
 from django.conf import settings
 from django.db.utils import ProgrammingError
+from json_field import JSONField
 
 from . import conf
 
@@ -37,7 +38,7 @@ class ActivityLog(models.Model):
     request_method = models.CharField(_('http method'), max_length=10)
     response_code = models.CharField(_('response code'), max_length=3)
     datetime = models.DateTimeField(_('datetime'), default=timezone.now)
-    extra_data = models.TextField(_('extra data'), blank=True, null=True)
+    extra_data = JSONField(_('extra data'), blank=True, null=True)
     ip_address = models.GenericIPAddressField(
         _('user IP'), null=True, blank=True)
 
