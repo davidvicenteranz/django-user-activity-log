@@ -33,6 +33,7 @@ setup(
 
     install_requires=[
         'jsonfield',
+        'Pygments'
     ],
 
     classifiers=(
