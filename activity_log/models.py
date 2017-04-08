@@ -12,7 +12,7 @@ from django.db import connection
 from django.core.management import call_command
 from django.conf import settings
 from django.db.utils import ProgrammingError
-from json_field import JSONField
+from jsonfield import JSONField
 
 from . import conf
 

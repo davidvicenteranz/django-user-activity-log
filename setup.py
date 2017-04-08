@@ -32,7 +32,7 @@ setup(
     long_description=DESCRIPTION,
 
     install_requires=[
-        'django-json-field',
+        'jsonfield',
     ],
 
     classifiers=(
