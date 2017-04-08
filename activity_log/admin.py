@@ -29,7 +29,7 @@ class LogAdmin(admin.ModelAdmin):
         response = response[:5000]
 
         # Get the Pygments formatter
-        formatter = HtmlFormatter(style='colorful')
+        formatter = HtmlFormatter(style='emacs')
 
         # Highlight the data
         response = highlight(response, JsonLexer(), formatter)
