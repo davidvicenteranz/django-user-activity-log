@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 import json
+from django.utils.safestring import mark_safe
 from pygments import highlight
 from pygments.lexers.data import JsonLexer
 from pygments.formatters import HtmlFormatter
