@@ -40,7 +40,7 @@ class ActivityLog(models.Model):
     datetime = models.DateTimeField(_('datetime'), default=timezone.now)
     extra_data = JSONField(_('extra data'), blank=True, null=True)
     ip_address = models.GenericIPAddressField(
-        _('user IP'), null=True, blank=True)
+        _('user IP'), null=True, blank=True, db_index=True)
 
     class Meta:
         verbose_name = _('activity log')

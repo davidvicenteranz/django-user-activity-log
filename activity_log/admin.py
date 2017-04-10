@@ -15,7 +15,7 @@ class LogAdmin(admin.ModelAdmin):
                     'response_code', 'datetime', 'ip_address')
     date_hierarchy = 'datetime'
     list_filter = ('request_method', 'response_code')
-    search_fields = ('user', 'request_url')
+    search_fields = ('user', 'request_url', '^ip_address')
     readonly_fields = ('user_id','user','request_url','request_method','response_code','datetime','data_prettified','ip_address')
     exclude = ('extra_data',)
 
