@@ -68,3 +68,7 @@ class ActivityLogMiddleware(MiddlewareMixin):
             ip_address=get_ip_address(request),
             extra_data=get_extra_data(request, response, body)
         )
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        return self.process_response(request, response)
