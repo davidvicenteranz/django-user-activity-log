@@ -85,7 +85,7 @@ class ActivityLogMiddleware(MiddlewareMixin):
             # Try to get user_obj from token
             user_obj = get_user_from_token(request)
 
-        #print user_obj, user_obj.get_username(), user_obj.pk
+        print user_obj, user_obj.get_username(), user_obj.pk
 
         if user_obj and user_obj.pk:
             user, user_id = user_obj.get_username(), user_obj.pk
