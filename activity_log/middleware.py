@@ -81,16 +81,16 @@ class ActivityLogMiddleware(MiddlewareMixin):
             return
 
         user_obj = getattr(request, 'user', None)
-        if not user_obj:
+        if not user_obj.pk:
             # Try to get user_obj from token
-            user_obj == get_user_from_token(request)
+            user_obj = get_user_from_token(request)
 
-        if user_obj:
+        if user_obj and user_obj.pk:
             user, user_id = user_obj.get_username(), user_obj.pk
         elif getattr(request, 'session', None):
             user, user_id = 'anon_{}'.format(request.session.session_key), 0
         else:
-            return
+            user, user_id = 'unknown', 0
         #print "end"
         ActivityLog.objects.create(
             user_id=user_id,
