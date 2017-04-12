@@ -8,7 +8,10 @@ from django.http import HttpResponseForbidden
 from django.utils.deprecation import MiddlewareMixin
 from .models import ActivityLog
 from . import conf
-
+try:
+    from rest_framework.authtoken.models import Token
+except:
+    pass
 
 def get_ip_address(request):
     for header in conf.IP_ADDRESS_HEADERS:
@@ -16,6 +19,28 @@ def get_ip_address(request):
         if addr:
             return addr.split(',')[0].strip()
 
+
+def get_user_from_token(request):
+    # check if meta has HTTP_AUTH
+    try:
+        token_string = request.META['HTTP_AUTHORIZATION'].split(' ')[1]
+    except:
+        token_string = None
+
+    if not token_string:
+        return None
+    try:
+        token = Token.objects.get(pk=token_string)
+    except:
+        token = None
+
+    if not token:
+        return None
+
+    try:
+        return token.user
+    except:
+        return None
 
 def get_extra_data(request, response, body):
     if not conf.GET_EXTRA_DATA:
@@ -55,8 +80,13 @@ class ActivityLogMiddleware(MiddlewareMixin):
         if any(miss_log):
             return
 
-        if getattr(request, 'user', None) and request.user.is_authenticated():
-            user, user_id = request.user.get_username(), request.user.pk
+        user_obj = getattr(request, 'user', None)
+        if not user_obj:
+            # Try to get user_obj from token
+            user_obj == get_user_from_token(request)
+
+        if user_obj:
+            user, user_id = user_obj.get_username(), user_obj.pk
         elif getattr(request, 'session', None):
             user, user_id = 'anon_{}'.format(request.session.session_key), 0
         else:
