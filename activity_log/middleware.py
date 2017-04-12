@@ -105,7 +105,7 @@ class ActivityLogMiddleware(MiddlewareMixin):
             extra_data=get_extra_data(request, response, body)
         )
         return
-
+    #
     # def process_request(self, request):
     #     request.saved_body = request.body
     #     print dir(request)
