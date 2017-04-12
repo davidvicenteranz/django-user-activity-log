@@ -5,8 +5,8 @@ from __future__ import unicode_literals
 from django.utils.module_loading import import_string as _load
 from django.core.exceptions import DisallowedHost
 from django.http import HttpResponseForbidden
-from .models import ActivityLog
 from django.utils.deprecation import MiddlewareMixin
+from .models import ActivityLog
 from . import conf
 
 
@@ -23,6 +23,7 @@ def get_extra_data(request, response, body):
     return _load(conf.GET_EXTRA_DATA)(request, response, body)
 
 class ActivityLogMiddleware(MiddlewareMixin):
+
     def process_request(self, request):
         request.saved_body = request.body
         if conf.LAST_ACTIVITY and request.user.is_authenticated():
@@ -67,7 +68,7 @@ class ActivityLogMiddleware(MiddlewareMixin):
             ip_address=get_ip_address(request),
             extra_data=get_extra_data(request, response, body)
         )
-
-    def __call__(self, request):
-        response = self.get_response(request)
-        return self.process_response(request, response)
+    #
+    # def __call__(self, request):
+    #     response = self.get_response(request)
+    #     return self.process_response(request, response)
