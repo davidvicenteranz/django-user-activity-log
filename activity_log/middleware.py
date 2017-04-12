@@ -22,61 +22,6 @@ def get_extra_data(request, response, body):
         return
     return _load(conf.GET_EXTRA_DATA)(request, response, body)
 
-class NewActivityLogMiddleware(object):
-    def __init__(self, get_response):
-        self.get_response = get_response
-        # One-time configuration and initialization.
-
-    def __call__(self, request):
-        # Code to be executed for each request before
-        # the view (and later middleware) are called.
-        response = self.get_response(request)
-
-        request.saved_body = request.body
-        if conf.LAST_ACTIVITY and request.user.is_authenticated():
-            getattr(request.user, 'update_last_activity', lambda: 1)()
-
-        try:
-            self._write_log(request, response, getattr(request, 'saved_body', ''))
-        except DisallowedHost:
-            return HttpResponseForbidden()
-
-        return response
-
-
-    def _write_log(self, request, response, body):
-        miss_log = [
-            not(conf.ANONIMOUS or request.user.is_authenticated()),
-            request.method not in conf.METHODS,
-            any(url in request.path for url in conf.EXCLUDE_URLS)
-        ]
-
-        if conf.STATUSES:
-            miss_log.append(response.status_code not in conf.STATUSES)
-
-        if conf.EXCLUDE_STATUSES:
-            miss_log.append(response.status_code in conf.EXCLUDE_STATUSES)
-
-        if any(miss_log):
-            return
-
-        if getattr(request, 'user', None) and request.user.is_authenticated():
-            user, user_id = request.user.get_username(), request.user.pk
-        elif getattr(request, 'session', None):
-            user, user_id = 'anon_{}'.format(request.session.session_key), 0
-        else:
-            return
-
-        ActivityLog.objects.create(
-            user_id=user_id,
-            user=user,
-            request_url=request.build_absolute_uri()[:255],
-            request_method=request.method,
-            response_code=response.status_code,
-            ip_address=get_ip_address(request),
-            extra_data=get_extra_data(request, response, body)
-        )
-
 class ActivityLogMiddleware(MiddlewareMixin):
     def process_request(self, request):
         request.saved_body = request.body
