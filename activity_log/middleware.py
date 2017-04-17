@@ -81,7 +81,7 @@ class ActivityLogMiddleware(MiddlewareMixin):
             return
 
         user_obj = getattr(request, 'user', None)
-        if not user_obj or not user_obj.pk:
+        if user_obj == None:
             # Try to get user_obj from token
             user_obj = get_user_from_token(request)
 
